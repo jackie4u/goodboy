@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35507.96
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodBoy", "GoodBoy\GoodBoy.csproj", "{9CECDD16-8D06-3F55-EB70-EE5952020D7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodBoy.Client", "GoodBoy.Client\GoodBoy.Client.csproj", "{88A8AD57-1B84-D28B-51F3-34A86C0DBF48}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CECDD16-8D06-3F55-EB70-EE5952020D7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CECDD16-8D06-3F55-EB70-EE5952020D7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CECDD16-8D06-3F55-EB70-EE5952020D7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CECDD16-8D06-3F55-EB70-EE5952020D7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88A8AD57-1B84-D28B-51F3-34A86C0DBF48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88A8AD57-1B84-D28B-51F3-34A86C0DBF48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88A8AD57-1B84-D28B-51F3-34A86C0DBF48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88A8AD57-1B84-D28B-51F3-34A86C0DBF48}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0AF67B1B-D8D9-4F93-A51A-AC25FD917646}
+	EndGlobalSection
+EndGlobal
