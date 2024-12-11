@@ -35,7 +35,7 @@ This repository contains a sample e-commerce application built with ASP.NET Core
 
 ### Running the Application Locally
 
-1. Clone the repository: `git clone https://github.com/jackie4u/javelin.git`
+1. Clone the repository: `git clone https://github.com/jackie4u/goodboy.git`
 2. Update the connection string in `appsettings.json` to point to your SQL Server database.
 3. Run the database migrations: `dotnet ef database update`
 4. Run the application: `dotnet run`
@@ -51,8 +51,8 @@ This repository contains a sample e-commerce application built with ASP.NET Core
 
 This repository serves as a learning resource for developers interested in:
 
-* Building REST APIs with ASP.NET Core.
+* Building REST APIs with ASP.NET.
 * Implementing background services for scheduled tasks.
 * Using Entity Framework Core for database interactions.
-* Creating interactive web applications with Blazor Server.
+* Creating interactive web applications with Blazor.
 * Enforcing business rules and constraints.
