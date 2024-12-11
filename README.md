@@ -6,14 +6,17 @@ This repository contains a sample e-commerce application built with ASP.NET Core
 
 ## Features
 
-* **API Module:** Provides a REST API for managing products.
-  * **Add Product:** Add new products to the catalogue.
-  * **Edit Product:** Edit existing product information (with a 12-hour price change limitation).
-  * **View Product Detail:** Retrieve details of a specific product.
-  * **View Product List:** Retrieve a list of all products.
-* **Background Service:** Automatically imports product data from an XML file once a day.
-* **Database:** Uses Microsoft SQL Server and Entity Framework Core for data persistence.
-* **Frontend:** Built with Blazor Server, providing a user-friendly interface for interacting with the API.
+* **Backend**
+
+  * **API:** Provides a REST API for managing products.
+
+    * **Add Product:** Add new products to the catalogue.
+    * **Edit Product:** Edit existing product information (with a 12-hour price change limitation).
+    * **View Product Detail:** Retrieve details of a specific product.
+    * **View Product List:** Retrieve a list of all products.
+  * **Database:** Uses Microsoft SQL Server and Entity Framework Core for data persistence.
+  * **Background Service:** Automatically imports product data from an XML file once a day.
+* **Frontend:** Built with Blazor providing a user-friendly interface for interacting with the API.
 
 ## Technologies Used
 
@@ -21,14 +24,12 @@ This repository contains a sample e-commerce application built with ASP.NET Core
 * Blazor
 * Entity Framework Core
 * SQL Server
-* .NET 9
-* C#
 
 ## Getting Started
 
 ### Prerequisites
 
-* .NET 9 SDK
+* .NET SDK
 * SQL Server (with a database created for the application)
 * Visual Studio 2022 or later (or your preferred IDE with .NET development support)
 
