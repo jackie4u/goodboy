@@ -1,8 +1,8 @@
-# Javelin: Product Catalog Management Application
+# GoodBoy: Product Catalog Management Application
 
-This repository contains a sample e-commerce application built with ASP.NET Core 9, Blazor Server, Entity Framework Core, and SQL Server. It demonstrates how to manage a product catalogue, import data from an XML file, and enforce business rules like price change limitations.
+This repository contains a sample e-commerce application built with ASP.NET Core 9, Blazor WASM, Entity Framework Core, and SQL Server. It demonstrates managing a product catalogue, importing data from an XML file, and enforcing business rules like price change limitations.
 
-**Note:** This application is for educational purposes only. It is designed to showcase ASP.NET Core and Blazor Server development techniques and is not intended for production use.
+**Note:** This application is for educational purposes only. It is designed to showcase ASP.NET Core and Blazor development techniques and is not intended for production use.
 
 ## Features
 
@@ -17,8 +17,8 @@ This repository contains a sample e-commerce application built with ASP.NET Core
 
 ## Technologies Used
 
-* ASP.NET Core 9 Web API
-* Blazor Server
+* ASP.NET 9 Web API
+* Blazor
 * Entity Framework Core
 * SQL Server
 * .NET 9
