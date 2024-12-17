@@ -2,7 +2,7 @@ namespace GoodBoy.Api.Persistence.Entities;
 
 public class Offer
 {
-    public int Id { get; set; }
+    public required int Id { get; set; }
     // public string Ean { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
