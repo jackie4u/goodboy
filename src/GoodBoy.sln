@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodBoy.Client", "GoodBoy.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodBoy.Api", "GoodBoy.Api\GoodBoy.Api.csproj", "{3A7010D5-05C1-982D-04E2-648FB78D398F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodBoy.Shared", "GoodBoy.Shared\GoodBoy.Shared.csproj", "{95024283-2F96-4224-98F8-C07930599019}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{3A7010D5-05C1-982D-04E2-648FB78D398F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A7010D5-05C1-982D-04E2-648FB78D398F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A7010D5-05C1-982D-04E2-648FB78D398F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95024283-2F96-4224-98F8-C07930599019}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95024283-2F96-4224-98F8-C07930599019}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95024283-2F96-4224-98F8-C07930599019}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95024283-2F96-4224-98F8-C07930599019}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

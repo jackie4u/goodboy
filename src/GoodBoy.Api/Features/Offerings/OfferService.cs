@@ -1,16 +1,31 @@
 ﻿using System.Collections.Concurrent;
+//using GoodBoy.Api.Features.Offerings.Endpoints;
+//using GoodBoy.Api.Persistence;
 using GoodBoy.Api.Persistence.Entities;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.IdentityModel.Tokens;
+//using Microsoft.AspNetCore.Http.HttpResults;
+//using Microsoft.IdentityModel.Tokens;
 
 namespace GoodBoy.Api.Features.Offerings;
 
-public class OfferService
+public interface IOfferService
+{
+    Task<Offer> CreateAsync(Offer offer);
+    Task<bool> DeleteByIdAsync(int id);
+    Task<IEnumerable<Offer>> GetAllAsync();
+    Task<Offer?> GetByIdAsync(int id);
+    Task<Offer> UpdateAsync(Offer newOffer);
+}
+
+public class OfferService : IOfferService
 {
     private readonly ConcurrentDictionary<int, Offer> _offerings = new();
+    //private readonly ILogger<OfferingsController> _logger;
+    //private readonly GoodBoyDbContext _context;
 
     public OfferService()
     {
+        //_logger = logger;
+        //_context = context;
     }
 
     public Task<Offer?> GetByIdAsync(int id)
