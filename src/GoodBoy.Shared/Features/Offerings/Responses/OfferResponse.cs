@@ -8,7 +8,7 @@ namespace GoodBoy.Shared.Features.Offerings.Responses;
 
 public class OfferResponse
 {
-    public required int Id { get; set; }
+    public int Id { get; set; }
     // public string Ean { get; set; }
     public string Name { get; set; } = string.Empty;
     public string? Description { get; set; }
