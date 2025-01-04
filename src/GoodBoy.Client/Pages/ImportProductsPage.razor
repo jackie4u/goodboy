@@ -1,17 +1,18 @@
-﻿@page "/auth"
+﻿@page "/import"
 
 @using Microsoft.AspNetCore.Authorization
 
 @attribute [Authorize]
+
 @rendermode InteractiveWebAssembly
 
 <MudPopoverProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<PageTitle>Auth</PageTitle>
+<PageTitle>Import Products</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">You are authenticated</MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">Import Products from XML</MudText>
 
 <AuthorizeView>
     <MudText Class="mb-4">Hello @context.User.Identity?.Name!</MudText>

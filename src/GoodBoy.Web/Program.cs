@@ -1,3 +1,4 @@
+using System.Reflection;
 using FastEndpoints;
 using GoodBoy.Client.Pages;
 using GoodBoy.Web.Components;
@@ -45,6 +46,8 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
 builder.Services.AddFastEndpoints();
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 var app = builder.Build();
 

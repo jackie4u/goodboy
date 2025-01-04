@@ -1,0 +1,32 @@
+[
+  {
+    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+    "value": "InstrumentationKey=861e2539-e10e-496c-8c0f-40c53a59b6aa;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=d875cbef-3d4a-4fa6-8e12-fc96d7a407f3",
+    "slotSetting": false
+  },
+  {
+    "name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+    "value": "~2",
+    "slotSetting": false
+  },
+  {
+    "name": "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES",
+    "value": "Microsoft.Azure.SignalR",
+    "slotSetting": true
+  },
+  {
+    "name": "Azure__SignalR__ConnectionString",
+    "value": "Endpoint=https://HarnessWebSignalR.service.signalr.net;AuthType=azure;Version=1.0;",
+    "slotSetting": true
+  },
+  {
+    "name": "Azure__SignalR__StickyServerMode",
+    "value": "Required",
+    "slotSetting": true
+  },
+  {
+    "name": "XDT_MicrosoftApplicationInsights_Mode",
+    "value": "default",
+    "slotSetting": false
+  }
+]

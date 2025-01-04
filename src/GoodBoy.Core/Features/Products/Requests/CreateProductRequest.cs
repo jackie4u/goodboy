@@ -9,6 +9,8 @@ namespace GoodBoy.Core.Features.Products.Requests;
 
 public class CreateProductRequest : IRequest<CreateProductRequest.Response>
 {
+    //public const string RouteTemplate = "/products";
+
     public ProductDto Product { get; set; } = new ProductDto(); // Initialize Product
 
     public record Response(int? ProductId);

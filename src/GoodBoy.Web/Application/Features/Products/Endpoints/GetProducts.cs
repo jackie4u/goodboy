@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GoodBoy.Web.Application.Features.Productings.Endpoints;
 
-[HttpGet("/products")]
+[HttpGet(GetProductsRequest.RouteTemplate)]
 [AllowAnonymous]
 public class GetProducts : EndpointWithoutRequest<GetProductsRequest.Response>
 {
