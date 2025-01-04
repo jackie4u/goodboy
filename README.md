@@ -20,10 +20,13 @@ This repository contains a sample e-commerce application built with ASP.NET Core
 
 ## Technologies Used
 
-* ASP.NET 9 Web API
-* Blazor
+* ASP.NET 8 (Web API)
 * Entity Framework Core
 * SQL Server
+* FastEndpoint
+* MediatR
+* Blazor
+* MudBlazor component library
 
 ## Getting Started
 
