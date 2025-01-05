@@ -1,7 +1,7 @@
 ﻿@page "/"
 @using GoodBoy.Core.Features.Products.Requests
 
-@inject IMediator Mediator
+@inject ProductsService ProductsService
 
 @rendermode InteractiveWebAssembly
 
@@ -51,7 +51,7 @@
     {
         try
         {
-            var response = await Mediator.Send(new GetProductsRequest());
+            var response = await ProductsService.GetProductsAsync(CancellationToken.None);
             _products = response.Products;
         }
         catch (Exception ex)

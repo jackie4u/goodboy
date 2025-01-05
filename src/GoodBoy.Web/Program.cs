@@ -1,6 +1,5 @@
-using System.Reflection;
 using FastEndpoints;
-using GoodBoy.Client.Pages;
+using GoodBoy.Client.Features.Products;
 using GoodBoy.Web.Components;
 using GoodBoy.Web.Components.Account;
 using GoodBoy.Web.Data;
@@ -47,7 +46,9 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 
 builder.Services.AddFastEndpoints();
 
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+// Goodboy app specific services
+//builder.Services.AddScoped<HttpClient>();
+//builder.Services.AddScoped<IProductsService, ProductsService>();
 
 var app = builder.Build();
 
