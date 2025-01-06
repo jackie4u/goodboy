@@ -6,11 +6,19 @@ using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-builder.Services.AddMudServices();
-
 builder.Services.AddAuthorizationCore();
 builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+
+builder.Services.AddScoped(sp => new HttpClient 
+{ 
+    BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
+});
+
+// Goodboy app specific services
+//builder.Services.AddScoped<HttpClient>();
+builder.Services.AddScoped<IProductsService, ProductsService>();
+
+builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();

@@ -21,24 +21,41 @@ public class GetProducts : EndpointWithoutRequest<GetProductsRequest.Response>
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
-        var products = await _context.Products
-            .OrderBy(p => p.CreatedOn)
-            .Select(product => new ProductDto
+        try
+        {
+            var products = await _context.Products
+                .OrderBy(p => p.CreatedOn)
+                .ToListAsync(cancellationToken);
+            
+            if (products.Any())
             {
-                Id = product.Id,
-                Ean = product.Ean,
-                Name = product.Name,
-                Description = product.Description,
-                Quantity = product.Quantity,
-                Currency = product.Currency,
-                Price = product.Price,
-                Categories = product.Categories,
-                MainPicture = product.MainPicture
-            })
-            .ToListAsync(cancellationToken);
+                var response = new GetProductsRequest.Response(
+                    products
+                        .Select(product => new ProductDto
+                        {
+                         Id = product.Id,
+                         Ean = product.Ean,
+                         Name = product.Name,
+                         Description = product.Description,
+                         Quantity = product.Quantity,
+                         Currency = product.Currency,
+                         Price = product.Price,
+                         Categories = product.Categories,
+                         MainPicture = product.MainPicture
+                         })
+                    );
 
-        var response = new GetProductsRequest.Response(products);
+                await SendAsync(response);
+            } else
+            {
+                await SendNotFoundAsync();
+            }
+        } catch (Exception ex)
+        {
+            // Todo<Medium>: Log the exception (using a logging framework like Serilog or NLog)
+            //_logger.LogError(ex, "An error occurred while fetching products.");
 
-        await SendAsync(response);
+            await SendErrorsAsync();
+        }
     }
 }

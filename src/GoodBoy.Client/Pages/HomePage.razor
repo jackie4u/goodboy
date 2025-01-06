@@ -1,9 +1,9 @@
 ﻿@page "/"
 @using GoodBoy.Core.Features.Products.Requests
 
-@inject ProductsService ProductsService
+@inject IProductsService ProductsService
 
-@rendermode InteractiveWebAssembly
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <MudPopoverProvider />
 <MudDialogProvider />

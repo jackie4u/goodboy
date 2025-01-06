@@ -11,6 +11,7 @@ public class ProductDto
     public int Quantity { get; set; } = 0;
     public Currencies Currency { get; set; }
     public decimal Price { get; set; } = decimal.Zero;
-    public List<Categories?> Categories { get; set; } = new List<Categories?>();
+    //public List<Categories?> Categories { get; set; } = new List<Categories?>();
+    public string? Categories { get; set; } = string.Empty;
     public string? MainPicture { get; set; }
 }

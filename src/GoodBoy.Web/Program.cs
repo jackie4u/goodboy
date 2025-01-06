@@ -46,10 +46,6 @@ builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSe
 
 builder.Services.AddFastEndpoints();
 
-// Goodboy app specific services
-//builder.Services.AddScoped<HttpClient>();
-//builder.Services.AddScoped<IProductsService, ProductsService>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
