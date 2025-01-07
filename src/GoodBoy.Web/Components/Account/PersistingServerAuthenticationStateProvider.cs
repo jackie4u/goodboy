@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using GoodBoy.Web.Client;
+using GoodBoy.Client;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;

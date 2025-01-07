@@ -2,9 +2,9 @@
 using GoodBoy.Web.Data;
 using GoodBoy.Web.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
-using GoodBoy.Core.Features.Products.Requests;
+using GoodBoy.Core.Features.Products;
 
-namespace GoodBoy.Web.Application.Features.Products.Endpoints;
+namespace GoodBoy.Web.Application.Features.Products;
 
 [HttpPost("/product")]
 [AllowAnonymous]

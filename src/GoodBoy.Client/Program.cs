@@ -1,8 +1,7 @@
-using GoodBoy.Client.Features.Products;
-using GoodBoy.Web.Client;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
+using GoodBoy.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -14,10 +13,6 @@ builder.Services.AddScoped(sp => new HttpClient
 { 
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) 
 });
-
-// Goodboy app specific services
-//builder.Services.AddScoped<HttpClient>();
-builder.Services.AddScoped<IProductsService, ProductsService>();
 
 builder.Services.AddMudServices();
 

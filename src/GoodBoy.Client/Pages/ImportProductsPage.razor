@@ -6,14 +6,12 @@
 
 @rendermode InteractiveWebAssembly
 
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
-
 <PageTitle>Import Products</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Import Products from XML</MudText>
+<MudContainer>
+    <MudText Typo="Typo.h3" GutterBottom="true">Import Products from XML</MudText>
 
-<AuthorizeView>
-    <MudText Class="mb-4">Hello @context.User.Identity?.Name!</MudText>
-</AuthorizeView>
+    <AuthorizeView>
+        <MudText Class="mb-4">Hello @context.User.Identity?.Name!</MudText>
+    </AuthorizeView>
+</MudContainer>

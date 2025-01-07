@@ -1,22 +1,13 @@
 ﻿@page "/"
-@using GoodBoy.Core.Features.Products.Requests
+@using GoodBoy.Core.Features.Products
 
-@inject IProductsService ProductsService
+@inject HttpClient httpClient
 
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
-<MudPopoverProvider />
-<MudDialogProvider />
-<MudSnackbarProvider />
-
-<MudAlert Severity="Severity.Warning">
-    This is only the testing version!
-</MudAlert>
-
 <PageTitle>Explore Products</PageTitle>
 
-<MudContainer Class="mt-16">
-
+<MudContainer>
     @if (_products == null)
     {
         <p>Loading Products...</p>
@@ -45,14 +36,14 @@
 </MudContainer>
 
 @code {
-    private IEnumerable<ProductDto>? _products;
+     private List<ProductDto> _products = new List<ProductDto>();
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            var response = await ProductsService.GetProductsAsync(CancellationToken.None);
-            _products = response.Products;
+            var response = await httpClient.GetFromJsonAsync<GetProductsRequest.Response>(GetProductsRequest.RouteTemplate, CancellationToken.None);
+            _products = response?.Products ?? new List<ProductDto>();
         }
         catch (Exception ex)
         {

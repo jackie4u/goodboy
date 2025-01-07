@@ -2,7 +2,7 @@
 using GoodBoy.Web.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 
-namespace GoodBoy.Web.Application.Features.Products.Endpoints;
+namespace GoodBoy.Web.Application.Features.Products;
 
 [HttpPut("/product")]
 [AllowAnonymous]

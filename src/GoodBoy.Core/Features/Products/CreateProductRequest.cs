@@ -1,5 +1,4 @@
-﻿
-namespace GoodBoy.Core.Features.Products.Requests;
+﻿namespace GoodBoy.Core.Features.Products;
 
 public class CreateProductRequest
 {

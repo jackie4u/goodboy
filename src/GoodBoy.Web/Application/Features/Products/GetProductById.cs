@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using Microsoft.AspNetCore.Authorization;
 
-namespace GoodBoy.Web.Application.Features.Products.Endpoints;
+namespace GoodBoy.Web.Application.Features.Products;
 
 [HttpGet("/product")]
 [AllowAnonymous]
