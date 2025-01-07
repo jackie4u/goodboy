@@ -1,0 +1,103 @@
+﻿@page "/product/edit"
+@page "/product/edit/{Id:int}"
+
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+@inject ISnackbar Snackbar
+
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+<MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="@(() => NavManager.NavigateTo("/"))" />
+
+<h3>@(_product != null ? "Edit Product" : "Create Product")</h3>
+
+<MudForm @bind-IsValid="_success" @ref="_form">
+    <MudTextField T="string" Label="Name" Required="true" RequiredError="Name is required!" @bind-Value="_product.Name" />
+    <MudTextField T="string" Label="EAN" @bind-Value="_product.Ean" />
+    <MudTextField T="string" Label="Description" @bind-Value="_product.Description" />
+    <MudNumericField T="int" Label="Quantity" Required="true" RequiredError="Quantity is required!" @bind-Value="_product.Quantity" />
+    <MudSelect T="Currencies" Label="Currency" Required="true" RequiredError="Currency is required!" @bind-Value="_product.Currency">
+        @foreach (var currency in Enum.GetValues(typeof(Currencies)))
+        {
+            <MudSelectItem T="Currencies" Value="@((Currencies)currency)">@currency</MudSelectItem>
+        }
+    </MudSelect>
+    <MudNumericField T="decimal" Label="Price" Required="true" RequiredError="Price is required!" @bind-Value="_product.Price" />
+    <MudTextField T="string" Label="Categories" @bind-Value="_product.Categories" />
+    <MudTextField T="string" Label="Main Picture URL" @bind-Value="_product.MainPicture" />
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" Disabled="_processing" OnClick="SaveProduct">
+        @if (_processing)
+        {
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+            <MudText Class="ms-2">Processing</MudText>
+        }
+        else
+        {
+            <MudText>Save</MudText>
+        }
+    </MudButton>
+</MudForm>
+
+@code {
+    private ProductDto _product = new ProductDto();
+    private MudForm? _form;
+    private bool _success;
+    private bool _processing = false;
+
+    [Parameter]
+    public int? Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id.HasValue)
+        {
+            try
+            {
+                string route = $"{GetProductByIdRequest.RouteTemplate}/{Id}";
+                var response = await HttpClient.GetFromJsonAsync<GetProductByIdRequest.Response>(route, CancellationToken.None);
+                //Todo<Low> Implement error page
+                _product = response?.Product ?? new ProductDto();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching product: {ex.Message}");
+                Snackbar.Add("Failed to load product.", Severity.Error);
+            }
+        }
+    }
+
+    private async Task SaveProduct()
+    {
+        _processing = true;
+
+        await _form!.Validate();
+        if (_success)
+        {
+            try
+            {
+                var request = new EditProductRequest() { Product = _product };
+                var response = new HttpResponseMessage();
+                if (Id.HasValue)
+                {
+                    response = await HttpClient.PutAsJsonAsync(EditProductRequest.RouteTemplate, request, CancellationToken.None);
+                } else
+                {
+                    response = await HttpClient.PostAsJsonAsync(EditProductRequest.RouteTemplate, request, CancellationToken.None);
+                }
+                // Redirect to the product detail page after successful creation
+                // Todo<Medium>: Add checks
+                // Snackbar.Add("Product updated successfully.", Severity.Success);
+                var result = await response.Content.ReadFromJsonAsync<EditProductRequest.Response>();
+                NavManager.NavigateTo($"/product/{result?.Id}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error saving product: {ex.Message}");
+                Snackbar.Add("Failed to save product.", Severity.Error);
+            }
+        }
+
+        _processing = false;
+    }
+}

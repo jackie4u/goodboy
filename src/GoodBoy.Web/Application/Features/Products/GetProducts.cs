@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using FastEndpoints;
+﻿using FastEndpoints;
 using GoodBoy.Core.Features.Products;
 using GoodBoy.Web.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -7,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GoodBoy.Web.Application.Features.Products;
 
-[HttpGet(Core.Features.Products.GetProductsRequest.RouteTemplate)]
+[HttpGet(GetProductsRequest.RouteTemplate)]
 [AllowAnonymous]
-public class GetProducts : EndpointWithoutRequest<Core.Features.Products.GetProductsRequest.Response>
+public class GetProducts : EndpointWithoutRequest<GetProductsRequest.Response>
 {
     private readonly ApplicationDbContext _context;
 
@@ -26,29 +25,30 @@ public class GetProducts : EndpointWithoutRequest<Core.Features.Products.GetProd
                 .OrderBy(p => p.CreatedOn)
                 .ToListAsync(cancellationToken);
 
-            if (products.Any())
-            {
-                var response = new GetProductsRequest.Response(
-                    products
-                        .Select(product => new ProductDto
-                        {
-                            Id = product.Id,
-                            Ean = product.Ean,
-                            Name = product.Name,
-                            Description = product.Description,
-                            Quantity = product.Quantity,
-                            Currency = product.Currency,
-                            Price = product.Price,
-                            Categories = product.Categories,
-                            MainPicture = product.MainPicture
-                        }).ToList()
-                    );
-
-                await SendAsync(response);
-            } else
+            if (!products.Any())
             {
                 await SendNotFoundAsync();
+                return;
             }
+
+            var response = new GetProductsRequest.Response(
+                products
+                    .Select(product => new ProductDto
+                    {
+                        Id = product.Id,
+                        Ean = product.Ean,
+                        Name = product.Name,
+                        Description = product.Description,
+                        Quantity = product.Quantity,
+                        Currency = product.Currency,
+                        Price = product.Price,
+                        Categories = product.Categories,
+                        MainPicture = product.MainPicture
+                    }).ToList()
+                );
+
+            await SendAsync(response);
+
         } catch (Exception ex)
         {
             // Todo<Medium>: Log the exception (using a logging framework like Serilog or NLog)

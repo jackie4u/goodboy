@@ -1,0 +1,85 @@
+﻿@page "/product/{Id:int}"
+
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+<MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="@(() => NavManager.NavigateTo("/"))" />
+
+@if (_product == null)
+{
+    <p>Loading product...</p>
+}
+else
+{
+    <MudGrid>
+        <MudItem xs="12" md="8">
+            <MudPaper Class="pa-4 mud-elevation-8">
+                <MudGrid>
+                    <MudItem xs="12" sm="6">
+                        <MudImage Src="@(!string.IsNullOrWhiteSpace(_product.MainPicture) ? _product.MainPicture : "https://via.placeholder.com/286x190.jpg?text=No+Product+Image")"
+                        Height="250"
+                        Style="object-fit: cover; object-position: top;" />
+                    </MudItem>
+                    <MudItem xs="12" sm="6">
+                        <MudText Typo="Typo.h5" GutterBottom="true">@_product.Name</MudText>
+                        <MudText Typo="Typo.body2">@_product.Description</MudText>
+                        <MudText><MudIcon Icon="@Icons.Material.Filled.Category" /> @_product.Categories</MudText>
+                        <MudText><MudIcon Icon="@Icons.Material.Filled.AttachMoney" /> @_product.Price @_product.Currency</MudText>
+                        <MudText><MudIcon Icon="@Icons.Material.Filled.Inventory2" /> @_product.Quantity</MudText>
+                    </MudItem>
+                </MudGrid>
+                <MudGrid Class="mt-4">
+                    <MudItem xs="6">
+                        <MudButton Variant="Variant.Filled"
+                        Color="Color.Primary"
+                        OnClick="EditProduct">
+                            Edit
+                        </MudButton>
+                    </MudItem>
+                    <MudItem xs="6">
+                        <MudButton Variant="Variant.Filled"
+                        Color="Color.Error"
+                        OnClick="DeleteProduct">
+                            Delete
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+}
+
+@code {
+    private ProductDto? _product;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            string route = $"{GetProductByIdRequest.RouteTemplate}/{Id}";
+            var response = await HttpClient.GetFromJsonAsync<GetProductByIdRequest.Response>(route, CancellationToken.None);
+            _product = response?.Product;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"There was a problem loading product details: {ex.Message}");
+        }
+    }
+
+    private async Task DeleteProduct()
+    {
+        string route = $"{DeleteProductByIdRequest.RouteTemplate}/{Id}";
+        await HttpClient.DeleteAsync(route, CancellationToken.None);
+        NavManager.NavigateTo($"/");
+    }
+
+    private void EditProduct()
+    {
+        NavManager.NavigateTo($"/product/edit/{Id}");
+    }
+}

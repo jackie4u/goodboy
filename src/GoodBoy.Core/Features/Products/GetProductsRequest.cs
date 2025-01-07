@@ -2,7 +2,7 @@
 
 public class GetProductsRequest
 {
-    public const string RouteTemplate = "/products";
+    public const string RouteTemplate = "/api/products";
 
     public record Response(List<ProductDto> Products);
 }

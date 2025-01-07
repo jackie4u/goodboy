@@ -15,6 +15,12 @@
         Icon="@Icons.Material.Filled.Lock">
         Import Products
     </MudNavLink>
+    <MudNavLink 
+        Href="/product/edit"
+        Match="NavLinkMatch.Prefix"
+        Icon="@Icons.Material.Filled.Edit">
+        Add Product
+    </MudNavLink>
     <AuthorizeView>
         <Authorized>
             <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>

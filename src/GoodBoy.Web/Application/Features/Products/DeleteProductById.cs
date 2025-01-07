@@ -2,17 +2,16 @@
 using GoodBoy.Core.Features.Products;
 using GoodBoy.Web.Data;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 
 namespace GoodBoy.Web.Application.Features.Products;
 
-[HttpGet($"{GetProductByIdRequest.RouteTemplate}/{{Id:int}}")]
+[HttpDelete($"{DeleteProductByIdRequest.RouteTemplate}/{{Id:int}}")]
 [AllowAnonymous]
-public class GetProductById : EndpointWithoutRequest<GetProductByIdRequest.Response>
+public class DeleteProductById : EndpointWithoutRequest
 {
     private readonly ApplicationDbContext _context;
 
-    public GetProductById(ApplicationDbContext context)
+    public DeleteProductById(ApplicationDbContext context)
     {
         _context = context;
     }
@@ -32,22 +31,10 @@ public class GetProductById : EndpointWithoutRequest<GetProductByIdRequest.Respo
                 return;
             }
 
-            var response = new GetProductByIdRequest.Response(
-                new ProductDto
-                {
-                    Id = product.Id,
-                    Ean = product.Ean,
-                    Name = product.Name,
-                    Description = product.Description,
-                    Quantity = product.Quantity,
-                    Currency = product.Currency,
-                    Price = product.Price,
-                    Categories = product.Categories,
-                    MainPicture = product.MainPicture
-                }
-            );
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync(cancellationToken);
 
-            await SendAsync(response);
+            await SendOkAsync();
 
         } catch (Exception ex)
         {

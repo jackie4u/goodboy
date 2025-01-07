@@ -65,11 +65,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-app.UseFastEndpoints();
+app.UseFastEndpoints(c => c.Binding.UsePropertyNamingPolicy = true);
 
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
-    .AddAdditionalAssemblies(typeof(GoodBoy.Client._Imports).Assembly);
+    .AddAdditionalAssemblies(typeof(GoodBoy.Client.Features._Imports).Assembly);
+
+app.MapFallbackToFile("index.html");
 
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();

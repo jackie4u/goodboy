@@ -6,9 +6,9 @@ using GoodBoy.Core.Features.Products;
 
 namespace GoodBoy.Web.Application.Features.Products;
 
-[HttpPost("/product")]
+[HttpPost(EditProductRequest.RouteTemplate)]
 [AllowAnonymous]
-public class CreateProduct : Endpoint<CreateProductRequest, CreateProductRequest.Response>
+public class CreateProduct : Endpoint<EditProductRequest, EditProductRequest.Response>
 {
     private readonly ApplicationDbContext _context;
 
@@ -17,7 +17,7 @@ public class CreateProduct : Endpoint<CreateProductRequest, CreateProductRequest
         _context = context;
     }
 
-    public override async Task HandleAsync(CreateProductRequest request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(EditProductRequest request, CancellationToken cancellationToken)
     {
         var product = new Product
         {
@@ -29,12 +29,14 @@ public class CreateProduct : Endpoint<CreateProductRequest, CreateProductRequest
             Currency = request.Product.Currency,
             Price = request.Product.Price,
             Categories = request.Product.Categories,
-            MainPicture = request.Product.MainPicture
+            MainPicture = request.Product.MainPicture,
+            CreatedOn = DateTime.UtcNow,
+            UpdatedOn = DateTime.UtcNow
         };
 
         await _context.AddAsync(product, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
 
-        await SendAsync(new CreateProductRequest.Response(product.Id));
+        await SendAsync(new EditProductRequest.Response(product.Id));
     }
 }

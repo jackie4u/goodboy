@@ -1,7 +1,7 @@
 ﻿@page "/"
 @using GoodBoy.Core.Features.Products
 
-@inject HttpClient httpClient
+@inject HttpClient HttpClient
 
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
@@ -42,7 +42,7 @@
     {
         try
         {
-            var response = await httpClient.GetFromJsonAsync<GetProductsRequest.Response>(GetProductsRequest.RouteTemplate, CancellationToken.None);
+            var response = await HttpClient.GetFromJsonAsync<GetProductsRequest.Response>(GetProductsRequest.RouteTemplate, CancellationToken.None);
             _products = response?.Products ?? new List<ProductDto>();
         }
         catch (Exception ex)
