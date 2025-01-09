@@ -17,6 +17,14 @@
         <MudText Typo="Typo.h3" GutterBottom="true">Products</MudText>
         <MudText Typo="Typo.body1" GutterBottom="true">Find awesome products here.</MudText>
 
+        <MudCheckBox T="bool" @bind-Value="_showOnlyInStock" Label="Show only in stock" Class="ml-n2" />
+        var shownProducts = _products.ToList();
+        
+        @if (_showOnlyInStock)
+        {
+            shownProducts = shownProducts.Where(p => p.Quantity > 0).ToList();
+        }
+
         @if (_products.Any())
         {
             <MudGrid Spacing="2" Class="mt-8">
@@ -53,6 +61,8 @@
     private int _currentPage = 1;
     private int _totalPages = 1;
     private int _pageSize = 9;
+
+    private bool _showOnlyInStock = false;
 
     protected override async Task OnInitializedAsync()
     {
