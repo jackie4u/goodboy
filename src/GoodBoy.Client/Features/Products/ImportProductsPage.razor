@@ -1,17 +1,61 @@
 ﻿@page "/import"
 
 @using Microsoft.AspNetCore.Authorization
+@using GoodBoy.Core.Features.Products
 
 @attribute [Authorize]
 
-@rendermode InteractiveWebAssembly
+@inject HttpClient HttpClient
+@inject ISnackbar Snackbar
+
+@rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
 <PageTitle>Import Products</PageTitle>
 
 <MudContainer>
     <MudText Typo="Typo.h3" GutterBottom="true">Import Products from XML</MudText>
 
-    <AuthorizeView>
-        <MudText Class="mb-4">Hello @context.User.Identity?.Name!</MudText>
-    </AuthorizeView>
+
+    <MudTextField T="string" Label="XML Content" Lines="20" @bind-Value="_xmlContent" />
+
+    <MudButton Variant="Variant.Filled"
+               Color="Color.Primary"
+               Class="mt-4"
+               OnClick="ImportProducts"
+               Disabled="_processing">
+        @if (_processing)
+        {
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+            <MudText Class="ms-2">Importing...</MudText>
+        }
+        else
+        {
+            <MudText>Import</MudText>
+        }
+    </MudButton>
 </MudContainer>
+
+@code {
+    private string _xmlContent = "";
+    private bool _processing = false;
+
+    private async Task ImportProducts()
+    {
+        _processing = true;
+
+        try
+        {
+            var request = new ImportProductsRequest { XmlContent = _xmlContent };
+            var response = await HttpClient.PostAsJsonAsync(ImportProductsRequest.RouteTemplate, request, CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error importing products: {ex.Message}");
+            Snackbar.Add("An error occurred during import.", Severity.Error);
+        }
+        finally
+        {
+            _processing = false;
+        }
+    }
+}

@@ -19,20 +19,7 @@ public class CreateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
 
     public override async Task HandleAsync(EditProductRequest request, CancellationToken cancellationToken)
     {
-        var product = new Product
-        {
-            Id = request.Product.Id,
-            Ean = request.Product.Ean,
-            Name = request.Product.Name,
-            Description = request.Product.Description,
-            Quantity = request.Product.Quantity,
-            Currency = request.Product.Currency,
-            Price = request.Product.Price,
-            Categories = request.Product.Categories,
-            MainPicture = request.Product.MainPicture,
-            CreatedOn = DateTime.UtcNow,
-            UpdatedOn = DateTime.UtcNow
-        };
+        var product = request.Product.MapNewEntity();
 
         await _context.AddAsync(product, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);

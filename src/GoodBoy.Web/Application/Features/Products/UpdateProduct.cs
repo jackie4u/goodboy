@@ -29,15 +29,7 @@ public class UpdateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
             return;
         }
 
-        product.Ean = request.Product.Ean;
-        product.Name = request.Product.Name;
-        product.Description = request.Product.Description;
-        product.Quantity = request.Product.Quantity;
-        product.Currency = request.Product.Currency;
-        product.Price = request.Product.Price;
-        product.Categories = request.Product.Categories;
-        product.MainPicture = request.Product.MainPicture;
-        product.UpdatedOn = DateTime.UtcNow;
+        request.Product.MapCurrentEntity(product);
 
         await _context.SaveChangesAsync(cancellationToken);
 
