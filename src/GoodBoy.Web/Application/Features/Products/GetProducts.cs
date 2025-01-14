@@ -5,28 +5,32 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace GoodBoy.Web.Application.Features.Products;
-
 [HttpGet(GetProductsRequest.RouteTemplate)]
 [AllowAnonymous]
 public class GetProducts : EndpointWithoutRequest<GetProductsRequest.Response>
 {
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<ImportProducts> _logger;
 
-    public GetProducts(ApplicationDbContext context)
+    public GetProducts(ApplicationDbContext context, ILogger<ImportProducts> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         try
         {
+            _logger.LogInformation("Fetching all products.");
+
             var products = await _context.Products
                 .OrderBy(p => p.CreatedOn)
                 .ToListAsync(cancellationToken);
 
             if (!products.Any())
             {
+                _logger.LogWarning("No products found in the database.");
                 await SendNotFoundAsync();
                 return;
             }
@@ -47,13 +51,11 @@ public class GetProducts : EndpointWithoutRequest<GetProductsRequest.Response>
                     }).ToList()
                 );
 
+            _logger.LogInformation("Successfully fetched {ProductCount} products.", products.Count);
             await SendAsync(response);
-
         } catch (Exception ex)
         {
-            // Todo<Medium>: Log the exception (using a logging framework like Serilog or NLog)
-            //_logger.LogError(ex, "An error occurred while fetching products.");
-
+            _logger.LogError(ex, "An unexpected error occurred while fetching products.");
             await SendErrorsAsync();
         }
     }

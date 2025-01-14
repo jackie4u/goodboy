@@ -2,8 +2,11 @@
 
 @inject HttpClient HttpClient
 @inject NavigationManager NavManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
+
+<MudPopoverProvider />
 
 <MudIconButton Icon="@Icons.Material.Filled.ArrowBack" OnClick="@(() => NavManager.NavigateTo("/"))" />
 
@@ -30,22 +33,26 @@ else
                         <MudText><MudIcon Icon="@Icons.Material.Filled.Inventory2" /> @_product.Quantity</MudText>
                     </MudItem>
                 </MudGrid>
-                <MudGrid Class="mt-4">
-                    <MudItem xs="6">
-                        <MudButton Variant="Variant.Filled"
-                        Color="Color.Primary"
-                        OnClick="EditProduct">
-                            Edit
-                        </MudButton>
-                    </MudItem>
-                    <MudItem xs="6">
-                        <MudButton Variant="Variant.Filled"
-                        Color="Color.Error"
-                        OnClick="DeleteProduct">
-                            Delete
-                        </MudButton>
-                    </MudItem>
-                </MudGrid>
+                <AuthorizeView> 
+                    <Authorized>
+                        <MudGrid Class="mt-4">
+                            <MudItem xs="6">
+                                <MudButton Variant="Variant.Filled"
+                                Color="Color.Primary"
+                                OnClick="EditProduct">
+                                    Edit
+                                </MudButton>
+                            </MudItem>
+                            <MudItem xs="6">
+                                <MudButton Variant="Variant.Filled"
+                                Color="Color.Error"
+                                OnClick="DeleteProduct">
+                                    Delete
+                                </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </Authorized>
+                </AuthorizeView>
             </MudPaper>
         </MudItem>
     </MudGrid>

@@ -16,7 +16,7 @@ public class ImportProducts : Endpoint<ImportProductsRequest, ImportProductsRequ
     private readonly ApplicationDbContext _context;
     private readonly ILogger<ImportProducts> _logger;
 
-    public ImportProducts(ApplicationDbContext context,ILogger<ImportProducts> logger)
+    public ImportProducts(ApplicationDbContext context, ILogger<ImportProducts> logger)
     {
         _context = context;
         _logger = logger;
@@ -32,7 +32,7 @@ public class ImportProducts : Endpoint<ImportProductsRequest, ImportProductsRequ
             var xmlProductNodes = xmlDocument.SelectNodes("/products/product");
             if (xmlProductNodes == null)
             {
-                await SendAsync(new ImportProductsRequest.Response(false, "Invalid XML format."));
+                await SendAsync(new ImportProductsRequest.Response(false, "Invalid XML format."), cancellation: cancellationToken);
                 return;
             }
 
@@ -63,20 +63,20 @@ public class ImportProducts : Endpoint<ImportProductsRequest, ImportProductsRequ
             }
 
             await _context.SaveChangesAsync(cancellationToken);
-            await SendAsync(new ImportProductsRequest.Response(true, "Products imported successfully."));
+            await SendAsync(new ImportProductsRequest.Response(true, "Products imported successfully."), cancellation: cancellationToken);
 
         } catch (XmlException ex)
         {
             _logger.LogError(ex, "Invalid XML format during product import.");
-            await SendAsync(new ImportProductsRequest.Response(false, "Invalid XML format."));
+            await SendAsync(new ImportProductsRequest.Response(false, "Invalid XML format."), cancellation: cancellationToken);
         } catch (DbUpdateException ex)
         {
             _logger.LogError(ex, "Database update error during product import.");
-            await SendAsync(new ImportProductsRequest.Response(false, "Database update failed."));
+            await SendAsync(new ImportProductsRequest.Response(false, "Database update failed."), cancellation: cancellationToken);
         } catch (Exception ex)
         {
             _logger.LogError(ex, "An unexpected error occurred during product import.");
-            await SendAsync(new ImportProductsRequest.Response(false, $"Import failed: {ex.Message}"));
+            await SendAsync(new ImportProductsRequest.Response(false, $"Import failed: {ex.Message}"), cancellation: cancellationToken);
         }
     }
 }

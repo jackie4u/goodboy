@@ -1,0 +1,97 @@
+﻿@using System.Net
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+@* @inject ISnackbar Snackbar *@
+
+<MudForm @bind-IsValid="_formIsValid" @ref="_form">
+    <MudNumericField HideSpinButtons="true" @bind-Value="Product.Id" Label="Id" Variant="Variant.Text" />
+    <MudTextField T="string" Label="Name" Required="true" RequiredError="Name is required!" @bind-Value="Product.Name" />
+    <MudTextField T="string" Label="EAN" @bind-Value="Product.Ean" />
+    <MudTextField T="string" Label="Description" @bind-Value="Product.Description" />
+    <MudNumericField T="int" Label="Quantity" Required="true" RequiredError="Quantity is required!" @bind-Value="Product.Quantity" />
+    <MudSelect T="Currencies" Label="Currency" Required="true" RequiredError="Currency is required!" @bind-Value="Product.Currency">
+        @foreach (var currency in Enum.GetValues(typeof(Currencies)))
+        {
+            <MudSelectItem T="Currencies" Value="@((Currencies)currency)">@currency</MudSelectItem>
+        }
+    </MudSelect>
+    <MudNumericField T="decimal" Label="Price" Required="true" RequiredError="Price is required!" @bind-Value="Product.Price" />
+    <MudTextField T="string" Label="Categories" @bind-Value="Product.Categories" />
+    <MudTextField T="string" Label="Main Picture URL" @bind-Value="Product.MainPicture" />
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" Disabled="_processing" OnClick="SaveProduct">
+        @if (_processing)
+        {
+            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+            <MudText Class="ms-2">Processing</MudText>
+        }
+        else
+        {
+            <MudText>Save</MudText>
+        }
+    </MudButton>
+</MudForm>
+
+@code {
+    private MudForm? _form;
+    private bool _formIsValid;
+    private bool _processing = false;
+
+    [Parameter]
+    public ProductDto Product { get; set; } = new ProductDto();
+
+    private async Task SaveProduct()
+    {
+        await _form!.Validate();
+        if (!_formIsValid)
+        {
+            return;
+        }
+
+        _processing = true;
+        try
+        {
+            ProductDto currentProduct = new ();
+            if (Product.Id != null)
+            {
+                try
+                {
+                    string route = $"{GetProductByIdRequest.RouteTemplate}/{Product.Id}";
+                    var productWithIdResponse = await HttpClient.GetFromJsonAsync<GetProductByIdRequest.Response>(route, CancellationToken.None);
+                    currentProduct = productWithIdResponse?.Product ?? new ProductDto();
+                }
+                catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                }
+            }
+
+            if (currentProduct != null && currentProduct.ProductId != Product.ProductId)
+            {
+                throw new ArgumentException($"A product with Id '{Product.Id}' already exists.", nameof(Product.Id));
+            }
+
+            var request = new EditProductRequest() { Product = Product };
+            var response = new HttpResponseMessage();
+            if (Product.ProductId.HasValue)
+            {
+                response = await HttpClient.PutAsJsonAsync(EditProductRequest.RouteTemplate, request, CancellationToken.None);
+            }
+            else
+            {
+                response = await HttpClient.PostAsJsonAsync(EditProductRequest.RouteTemplate, request, CancellationToken.None);
+            }
+            var result = await response.Content.ReadFromJsonAsync<EditProductRequest.Response>();
+            // Fixme <low>: Snackbar does not work
+            // Snackbar.Add("Product updated successfully.", Severity.Success);
+            // Redirect to the product detail page after successful creation
+            NavManager.NavigateTo($"/product/{result?.Id}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving product: {ex.Message}");
+            // Fixme <low>: Snackbar does not work
+            // Snackbar.Add("Failed to save product.", Severity.Error);
+        }
+        _processing = false;
+    }
+}

@@ -5,6 +5,8 @@
 
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
+<MudPopoverProvider />
+
 <PageTitle>Explore Products</PageTitle>
 
 <MudContainer>
@@ -17,7 +19,8 @@
         <MudText Typo="Typo.h3" GutterBottom="true">Products</MudText>
         <MudText Typo="Typo.body1" GutterBottom="true">Find awesome products here.</MudText>
 
-        <MudCheckBox T="bool" @bind-Value="_showOnlyInStock" Label="Show only in stock" Class="ml-n2" />
+        // Fixme: Filter checkbox for only in stock products
+        @* <MudCheckBox T="bool" @bind-Value="_showOnlyInStock" Label="Show only in stock" Class="ml-n2" /> *@
         var shownProducts = _products.ToList();
         
         @if (_showOnlyInStock)

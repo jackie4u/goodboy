@@ -4,6 +4,7 @@ namespace GoodBoy.Core.Features.Products;
 
 public class ProductDto
 {
+    public int? ProductId { get; set; }
     public int? Id { get; set; }
     public string? Ean { get; set; }
     public string Name { get; set; } = string.Empty;

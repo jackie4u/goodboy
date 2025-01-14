@@ -32,6 +32,10 @@ public class ProductConfig : IEntityTypeConfiguration<Product>
         builder.Property(x => x.Id)
             .ValueGeneratedNever(); // Prevent automatic generation for Id
 
+        builder.HasIndex(x => x.Id)
+               .IsUnique()
+               .HasFilter("[Id] IS NOT NULL");
+
         builder.Property(x => x.Name)
             .IsRequired()
             .HasMaxLength(200);

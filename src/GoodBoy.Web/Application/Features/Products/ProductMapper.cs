@@ -28,6 +28,7 @@ public static class ProductMapper
 
     public static void MapCurrentEntity(this ProductDto productDto, Product product)
     {
+        product.Id = productDto.Id;
         product.Ean = productDto.Ean;
         product.Name = productDto.Name;
         product.Description = productDto.Description;

@@ -10,8 +10,7 @@ public class ImportProductsRequest
 {
     public const string RouteTemplate = "/products/import";
 
-    //public XmlDocument XmlDocument { get; set; } = new XmlDocument();
-    public string XmlContent { get; set; } = ""; // Use string for XML content
+    public string XmlContent { get; set; } = ""; // Use string for XML content instead of XmlDocument
 
     public record Response(bool Success, string? Message);
 }

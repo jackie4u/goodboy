@@ -11,10 +11,12 @@ namespace GoodBoy.Web.Application.Features.Products;
 public class GetProductById : EndpointWithoutRequest<GetProductByIdRequest.Response>
 {
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<ImportProducts> _logger;
 
-    public GetProductById(ApplicationDbContext context)
+    public GetProductById(ApplicationDbContext context, ILogger<ImportProducts> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
@@ -22,12 +24,14 @@ public class GetProductById : EndpointWithoutRequest<GetProductByIdRequest.Respo
         try
         {
             int id = Route<int>("Id");
+            _logger.LogInformation($"Fetching product with ID: {id}");
 
             var product = await _context.Products
-                .FindAsync(id);
+                .SingleAsync(p => p.Id == id);
 
             if (product == null)
             {
+                _logger.LogWarning($"Product with ID {id} not found.");
                 await SendNotFoundAsync();
                 return;
             }
@@ -35,6 +39,7 @@ public class GetProductById : EndpointWithoutRequest<GetProductByIdRequest.Respo
             var response = new GetProductByIdRequest.Response(
                 new ProductDto
                 {
+                    ProductId = product.ProductId,
                     Id = product.Id,
                     Ean = product.Ean,
                     Name = product.Name,
@@ -47,13 +52,15 @@ public class GetProductById : EndpointWithoutRequest<GetProductByIdRequest.Respo
                 }
             );
 
+            _logger.LogInformation($"Product with ID {id} fetched successfully.");
             await SendAsync(response);
-
+        } catch (InvalidOperationException ex) // Handle SingleAsync exceptions
+        {
+            _logger.LogError(ex, $"Error fetching product: {ex.Message}");
+            await SendNotFoundAsync(); // Or SendBadRequestAsync if appropriate
         } catch (Exception ex)
         {
-            // Todo<Medium>: Log the exception (using a logging framework like Serilog or NLog)
-            //_logger.LogError(ex, "An error occurred while fetching product.");
-
+            _logger.LogError(ex, "An unexpected error occurred while fetching product.");
             await SendErrorsAsync();
         }
     }
