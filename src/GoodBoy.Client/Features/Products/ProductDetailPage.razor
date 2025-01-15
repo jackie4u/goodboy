@@ -36,17 +36,22 @@ else
                 <AuthorizeView> 
                     <Authorized>
                         <MudGrid Class="mt-4">
+                            <MudItem xs="12">
+                                <ErrorMessage Message="@_errorMessage" />
+                            </MudItem>
                             <MudItem xs="6">
                                 <MudButton Variant="Variant.Filled"
                                 Color="Color.Primary"
-                                OnClick="EditProduct">
+                                OnClick="EditProduct"
+                                StartIcon="@Icons.Material.Filled.Edit">
                                     Edit
                                 </MudButton>
                             </MudItem>
                             <MudItem xs="6">
                                 <MudButton Variant="Variant.Filled"
                                 Color="Color.Error"
-                                OnClick="DeleteProduct">
+                                OnClick="DeleteProduct"
+                                StartIcon="@Icons.Material.Filled.Delete">
                                     Delete
                                 </MudButton>
                             </MudItem>
@@ -60,6 +65,7 @@ else
 
 @code {
     private ProductDto? _product;
+    private string? _errorMessage;
 
     [Parameter]
     public int Id { get; set; }
@@ -74,15 +80,24 @@ else
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"There was a problem loading product details: {ex.Message}");
+            _errorMessage = $"There was a problem loading product details: {ex.Message}";
+            Console.WriteLine(_errorMessage);
         }
     }
 
     private async Task DeleteProduct()
     {
-        string route = $"{DeleteProductByIdRequest.RouteTemplate}/{Id}";
-        await HttpClient.DeleteAsync(route, CancellationToken.None);
-        NavManager.NavigateTo($"/");
+        try 
+        {
+            string route = $"{DeleteProductByIdRequest.RouteTemplate}/{Id}";
+            await HttpClient.DeleteAsync(route, CancellationToken.None);
+            NavManager.NavigateTo($"/");
+        } 
+        catch (Exception ex)
+        {
+            _errorMessage = $"Error during deletion of product: {ex.Message}";
+            Console.WriteLine(_errorMessage);
+        }
     }
 
     private void EditProduct()

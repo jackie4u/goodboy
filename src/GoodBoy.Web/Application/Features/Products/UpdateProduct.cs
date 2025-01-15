@@ -36,6 +36,14 @@ public class UpdateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
                 return;
             }
 
+            var updatedHoursAgo = (DateTime.UtcNow - product.UpdatedOn).TotalHours;
+            if (product.Price != request.Product.Price && updatedHoursAgo < 12)
+            {
+                _logger.LogError($"It is not possible to update price more than once in 12 hours. Update price will be possible again after {product.UpdatedOn.AddHours(12)}.");
+                await SendErrorsAsync();
+                return;
+            }
+
             request.Product.MapCurrentEntity(product);
 
             await _context.SaveChangesAsync(cancellationToken);

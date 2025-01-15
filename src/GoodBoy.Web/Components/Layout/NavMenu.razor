@@ -9,26 +9,25 @@
             Icon="@Icons.Material.Filled.Home">
             Home
     </MudNavLink>
-    <MudNavLink 
-        Href="import" 
-        Match="NavLinkMatch.Prefix" 
-        Icon="@Icons.Material.Filled.Lock">
-        Import Products
-    </MudNavLink>
-    <MudNavLink 
-        Href="/product/add"
-        Match="NavLinkMatch.Prefix"
-        Icon="@Icons.Material.Filled.Edit">
-        Add Product
-    </MudNavLink>
     <AuthorizeView>
         <Authorized>
+            <MudNavLink Href="product/add"
+                        Match="NavLinkMatch.Prefix"
+                        Icon="@Icons.Material.Filled.Add">
+                Add Product
+            </MudNavLink>
+            <MudNavLink 
+                Href="import" 
+                Match="NavLinkMatch.Prefix" 
+                Icon="@Icons.Material.Filled.Lock">
+                Import Products
+            </MudNavLink>
             <MudNavLink Href="Account/Manage" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">@context.User.Identity?.Name</MudNavLink>
             <form action="Account/Logout" method="post">
                 <AntiforgeryToken />
                 <input type="hidden" name="ReturnUrl" value="@currentUrl" />
                 <button type="submit" class="mud-nav-link mud-ripple">
-                    <MudIcon Icon="@Icons.Material.Filled.Logout" Color="Color.Info" Class="mr-3"></MudIcon> Logout
+                    <MudIcon Icon="@Icons.Material.Filled.Logout" Class="mr-3"></MudIcon> Logout
                 </button>
             </form>
         </Authorized>
@@ -37,6 +36,11 @@
             <MudNavLink Href="Account/Register" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Person">Register</MudNavLink>
         </NotAuthorized>
     </AuthorizeView>
+    <MudNavLink Href="about"
+                Match="NavLinkMatch.Prefix"
+                Icon="@Icons.Material.Filled.Info">
+        About
+    </MudNavLink>
 </MudNavMenu>
 
 

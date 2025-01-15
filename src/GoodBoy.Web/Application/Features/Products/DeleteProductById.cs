@@ -27,7 +27,7 @@ public class DeleteProductById : EndpointWithoutRequest
             _logger.LogInformation("Deleting product with ID: {ProductId}", id);
 
             var product = await _context.Products
-                .FindAsync(id);
+                .SingleAsync(p => p.Id == id);
 
             if (product == null)
             {

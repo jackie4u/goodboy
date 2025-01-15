@@ -28,16 +28,16 @@ public static class ProductMapper
 
     public static void MapCurrentEntity(this ProductDto productDto, Product product)
     {
-        product.Id = productDto.Id;
+        product.Id = productDto.Id ?? product.ProductId;
         product.Ean = productDto.Ean;
         product.Name = productDto.Name;
         product.Description = productDto.Description;
         product.Quantity = productDto.Quantity;
         product.Currency = productDto.Currency;
+        product.UpdatedOn = (product.Price != productDto.Price ? DateTime.UtcNow : product.UpdatedOn);
         product.Price = productDto.Price;
         product.Categories = productDto.Categories;
         product.MainPicture = productDto.MainPicture;
-        product.UpdatedOn = DateTime.UtcNow;
     }
 
     public static ProductDto MapFromXmlNode(XmlNode productNode)

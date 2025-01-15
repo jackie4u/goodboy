@@ -1,5 +1,6 @@
 using FastEndpoints;
-using GoodBoy.Client.Features.Products;
+using Quartz;
+using GoodBoy.Web.Application.Features.Products;
 using GoodBoy.Web.Components;
 using GoodBoy.Web.Components.Account;
 using GoodBoy.Web.Data;
@@ -46,8 +47,25 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+builder.Services.AddScoped<IImportProductsService, ImportProductsService>();
 
 builder.Services.AddFastEndpoints();
+
+builder.Services.AddQuartz(q =>
+{
+    q.AddJob<ImportProductsJob>(opts => opts
+        .WithIdentity("ImportProductsJob")
+        .WithDescription("Imports products from XML file.")
+    );
+
+    q.AddTrigger(opts => opts
+        .ForJob("ImportProductsJob")
+        .WithIdentity("ImportProductsJob-trigger")
+        .WithCronSchedule(builder.Configuration["Quartz:Jobs:ImportProductsJob:CronSchedule"]!)
+    );
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 // Configure logging
 builder.Logging.ClearProviders();

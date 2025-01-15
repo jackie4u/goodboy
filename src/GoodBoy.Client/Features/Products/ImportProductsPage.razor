@@ -5,7 +5,7 @@
 @attribute [Authorize]
 
 @inject HttpClient HttpClient
-@* @inject ISnackbar Snackbar *@
+@inject NavigationManager NavManager
 
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
 
@@ -16,6 +16,7 @@
 <MudContainer>
     <MudText Typo="Typo.h3" GutterBottom="true">Import Products from XML</MudText>
 
+    <ErrorMessage Message="@_errorMessage" />
 
     <MudTextField T="string" Label="XML Content" Lines="20" @bind-Value="_xmlContent" />
 
@@ -37,8 +38,9 @@
 </MudContainer>
 
 @code {
-    private string _xmlContent = "";
+    private string _xmlContent = ProductsFeedXml.LoadXmlContent();
     private bool _processing = false;
+    private string? _errorMessage;
 
     private async Task ImportProducts()
     {
@@ -48,12 +50,13 @@
         {
             var request = new ImportProductsRequest { XmlContent = _xmlContent };
             var response = await HttpClient.PostAsJsonAsync(ImportProductsRequest.RouteTemplate, request, CancellationToken.None);
+            // Note: Redirect to the product detail page after successful creation
+            NavManager.NavigateTo("/");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error importing products: {ex.Message}");
-            // Fixme <low>: Snackbar does not work
-            // Snackbar.Add("An error occurred during import.", Severity.Error);
+            _errorMessage = $"Error importing products: {ex.Message}";
+            Console.WriteLine(_errorMessage);
         }
         finally
         {

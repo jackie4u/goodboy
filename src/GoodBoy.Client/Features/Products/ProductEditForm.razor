@@ -1,7 +1,7 @@
 ﻿@using System.Net
 @inject HttpClient HttpClient
 @inject NavigationManager NavManager
-@* @inject ISnackbar Snackbar *@
+
 
 <MudForm @bind-IsValid="_formIsValid" @ref="_form">
     <MudNumericField HideSpinButtons="true" @bind-Value="Product.Id" Label="Id" Variant="Variant.Text" />
@@ -18,6 +18,10 @@
     <MudNumericField T="decimal" Label="Price" Required="true" RequiredError="Price is required!" @bind-Value="Product.Price" />
     <MudTextField T="string" Label="Categories" @bind-Value="Product.Categories" />
     <MudTextField T="string" Label="Main Picture URL" @bind-Value="Product.MainPicture" />
+
+    <MudItem xs="12">
+        <ErrorMessage Message="@_errorMessage" />
+    </MudItem>
 
     <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mt-4" Disabled="_processing" OnClick="SaveProduct">
         @if (_processing)
@@ -36,6 +40,7 @@
     private MudForm? _form;
     private bool _formIsValid;
     private bool _processing = false;
+    private string? _errorMessage;
 
     [Parameter]
     public ProductDto Product { get; set; } = new ProductDto();
@@ -62,10 +67,11 @@
                 }
                 catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
+                    // Note: Ok - We are creating/updating new Id
                 }
             }
 
-            if (currentProduct != null && currentProduct.ProductId != Product.ProductId)
+            if (currentProduct.ProductId != null && currentProduct.ProductId != Product.ProductId)
             {
                 throw new ArgumentException($"A product with Id '{Product.Id}' already exists.", nameof(Product.Id));
             }
@@ -81,16 +87,13 @@
                 response = await HttpClient.PostAsJsonAsync(EditProductRequest.RouteTemplate, request, CancellationToken.None);
             }
             var result = await response.Content.ReadFromJsonAsync<EditProductRequest.Response>();
-            // Fixme <low>: Snackbar does not work
-            // Snackbar.Add("Product updated successfully.", Severity.Success);
-            // Redirect to the product detail page after successful creation
+            // Note: Redirect to the product detail page after successful creation
             NavManager.NavigateTo($"/product/{result?.Id}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error saving product: {ex.Message}");
-            // Fixme <low>: Snackbar does not work
-            // Snackbar.Add("Failed to save product.", Severity.Error);
+            _errorMessage = $"Error saving product: {ex.Message}";
+            Console.WriteLine(_errorMessage);
         }
         _processing = false;
     }

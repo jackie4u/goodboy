@@ -1,4 +1,5 @@
 ﻿@page "/"
+
 @using GoodBoy.Core.Features.Products
 
 @inject HttpClient HttpClient
@@ -10,6 +11,7 @@
 <PageTitle>Explore Products</PageTitle>
 
 <MudContainer>
+
     @if (_products == null)
     {
         <p>Loading Products...</p>
@@ -17,7 +19,8 @@
     else
     {
         <MudText Typo="Typo.h3" GutterBottom="true">Products</MudText>
-        <MudText Typo="Typo.body1" GutterBottom="true">Find awesome products here.</MudText>
+
+        <IntroText />
 
         // Fixme: Filter checkbox for only in stock products
         @* <MudCheckBox T="bool" @bind-Value="_showOnlyInStock" Label="Show only in stock" Class="ml-n2" /> *@

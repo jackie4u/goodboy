@@ -16,6 +16,5 @@ builder.Services.AddScoped(sp => new HttpClient
 });
 
 builder.Services.AddMudServices();
-// builder.Services.AddSingleton<ISnackbar, SnackbarService>();
 
 await builder.Build().RunAsync();
