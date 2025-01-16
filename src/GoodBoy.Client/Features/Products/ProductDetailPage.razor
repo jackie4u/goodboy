@@ -12,7 +12,11 @@
 
 @if (_product == null)
 {
-    <p>Loading product...</p>
+    <div class="d-flex flex-column align-center">
+        <MudProgressCircular Color="Color.Default" Indeterminate="true" />
+        <MudText Typo="Typo.body1" Align="Align.Center">Loading product...</MudText>
+        <ErrorMessage Message="@_errorMessage" />
+    </div>
 }
 else
 {
@@ -20,6 +24,9 @@ else
         <MudItem xs="12" md="8">
             <MudPaper Class="pa-4 mud-elevation-8">
                 <MudGrid>
+                    <MudItem xs="12">
+                        <ErrorMessage Message="@_errorMessage" />
+                    </MudItem>
                     <MudItem xs="12" sm="6">
                         <MudImage Src="@(!string.IsNullOrWhiteSpace(_product.MainPicture) ? _product.MainPicture : "https://via.placeholder.com/286x190.jpg?text=No+Product+Image")"
                         Height="250"
@@ -36,9 +43,6 @@ else
                 <AuthorizeView> 
                     <Authorized>
                         <MudGrid Class="mt-4">
-                            <MudItem xs="12">
-                                <ErrorMessage Message="@_errorMessage" />
-                            </MudItem>
                             <MudItem xs="6">
                                 <MudButton Variant="Variant.Filled"
                                 Color="Color.Primary"
@@ -76,6 +80,12 @@ else
         {
             string route = $"{GetProductByIdRequest.RouteTemplate}/{Id}";
             var response = await HttpClient.GetFromJsonAsync<GetProductByIdRequest.Response>(route, CancellationToken.None);
+
+            if (!response!.Success)
+            {
+                throw new Exception($"Server error: '{response.Message}'");
+            }
+
             _product = response?.Product;
         }
         catch (Exception ex)
@@ -90,7 +100,16 @@ else
         try 
         {
             string route = $"{DeleteProductByIdRequest.RouteTemplate}/{Id}";
-            await HttpClient.DeleteAsync(route, CancellationToken.None);
+            var response = await HttpClient.DeleteAsync(route, CancellationToken.None);
+
+            var result = await response.Content.ReadFromJsonAsync<DeleteProductByIdRequest.Response>();
+
+            if (!result!.Success)
+            {
+                throw new Exception($"Server error: '{result.Message}'");
+            }
+
+            // Note: Redirect to the product detail page after successful deletion
             NavManager.NavigateTo($"/");
         } 
         catch (Exception ex)

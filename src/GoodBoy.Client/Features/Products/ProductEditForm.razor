@@ -56,24 +56,25 @@
         _processing = true;
         try
         {
-            ProductDto currentProduct = new ();
             if (Product.Id != null)
             {
+                ProductDto productWithId = new ();
+
                 try
                 {
                     string route = $"{GetProductByIdRequest.RouteTemplate}/{Product.Id}";
                     var productWithIdResponse = await HttpClient.GetFromJsonAsync<GetProductByIdRequest.Response>(route, CancellationToken.None);
-                    currentProduct = productWithIdResponse?.Product ?? new ProductDto();
+                    productWithId = productWithIdResponse?.Product ?? new ProductDto();
                 }
                 catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
                 {
-                    // Note: Ok - We are creating/updating new Id
+                    // Note: Ok - We are creating/updating with new Id
                 }
-            }
 
-            if (currentProduct.ProductId != null && currentProduct.ProductId != Product.ProductId)
-            {
-                throw new ArgumentException($"A product with Id '{Product.Id}' already exists.", nameof(Product.Id));
+                if (productWithId.ProductId != null && productWithId.ProductId != Product.ProductId)
+                {
+                    throw new ArgumentException($"A product with Id '{Product.Id}' already exists.", nameof(Product.Id));
+                }
             }
 
             var request = new EditProductRequest() { Product = Product };
@@ -86,7 +87,14 @@
             {
                 response = await HttpClient.PostAsJsonAsync(EditProductRequest.RouteTemplate, request, CancellationToken.None);
             }
+
             var result = await response.Content.ReadFromJsonAsync<EditProductRequest.Response>();
+
+            if (!result!.Success)
+            {
+                throw new Exception($"Server error: '{result.Message}'");
+            }
+
             // Note: Redirect to the product detail page after successful creation
             NavManager.NavigateTo($"/product/{result?.Id}");
         }

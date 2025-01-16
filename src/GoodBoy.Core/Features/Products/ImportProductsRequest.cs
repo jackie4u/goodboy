@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+﻿using GoodBoy.Core.Features.Shared;
 
 namespace GoodBoy.Core.Features.Products;
 public class ImportProductsRequest
@@ -12,5 +7,5 @@ public class ImportProductsRequest
 
     public string XmlContent { get; set; } = ""; // Use string for XML content instead of XmlDocument
 
-    public record Response(bool Success, string? Message);
+    public record Response(bool Success = true, string? Message = null) : BaseResponse(Success, Message);
 }

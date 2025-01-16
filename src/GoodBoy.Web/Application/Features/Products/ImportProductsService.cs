@@ -1,4 +1,6 @@
-﻿using GoodBoy.Web.Data;
+﻿using GoodBoy.Core.Features.Products;
+using GoodBoy.Core.Features.Shared;
+using GoodBoy.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Xml;
 
@@ -6,7 +8,7 @@ namespace GoodBoy.Web.Application.Features.Products;
 
 public interface IImportProductsService
 {
-    Task<(bool Success, string? Message)> ImportProductsAsync(string xmlContent, CancellationToken cancellationToken);
+    Task<BaseResponse> ImportProductsAsync(string xmlContent, CancellationToken cancellationToken);
 }
 
 public class ImportProductsService : IImportProductsService
@@ -20,8 +22,9 @@ public class ImportProductsService : IImportProductsService
         _logger = logger;
     }
 
-    public async Task<(bool Success, string? Message)> ImportProductsAsync(string xmlContent, CancellationToken cancellationToken)
+    public async Task<BaseResponse> ImportProductsAsync(string xmlContent, CancellationToken cancellationToken)
     {
+        string? _errorMessage;
         try
         {
             var xmlDocument = new XmlDocument();
@@ -30,7 +33,12 @@ public class ImportProductsService : IImportProductsService
             var xmlProductNodes = xmlDocument.SelectNodes("/products/product");
             if (xmlProductNodes == null)
             {
-                return (false, "Invalid XML format.");
+                _errorMessage = "No XML data found.";
+                _logger.LogWarning(_errorMessage);
+                return new BaseResponse { 
+                    Success = false, 
+                    Message = _errorMessage
+                };
             }
 
             var xmlProductDtos = xmlProductNodes
@@ -42,7 +50,6 @@ public class ImportProductsService : IImportProductsService
 
             var existingProducts = await _context.Products
                 .Where(p => xmlProductIds.Contains(p.Id ?? 0))
-                .AsNoTracking()
                 .ToDictionaryAsync(p => p.Id ?? 0, cancellationToken);
 
             foreach (var xmlProductDto in xmlProductDtos)
@@ -51,7 +58,8 @@ public class ImportProductsService : IImportProductsService
 
                 if (product != null)
                 {
-                    xmlProductDto.MapCurrentEntity(product);
+                    // Note: For current products keep the current price
+                    xmlProductDto.MapCurrentEntity(product, keepPrice: true);
                 } else
                 {
                     var newProduct = xmlProductDto.MapNewEntity();
@@ -60,19 +68,22 @@ public class ImportProductsService : IImportProductsService
             }
 
             await _context.SaveChangesAsync(cancellationToken);
-            return (true, "Products imported successfully.");
+            return new BaseResponse {Success = true};
         } catch (XmlException ex)
         {
-            _logger.LogError(ex, "Invalid XML format during product import.");
-            return (false, "Invalid XML format.");
+            _errorMessage = "Invalid XML format.";
+            _logger.LogError(ex, _errorMessage);
+            return new BaseResponse(false, $"{_errorMessage}: {ex.Message}");
         } catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Database update error during product import.");
-            return (false, "Database update failed.");
+            _errorMessage = "Database update error.";
+            _logger.LogError(ex, _errorMessage);
+            return new BaseResponse(false, $"{_errorMessage}: {ex.Message}");
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred during product import.");
-            return (false, $"Import failed: {ex.Message}");
+            _errorMessage = "An unexpected error occurred.";
+            _logger.LogError(ex, _errorMessage);
+            return new BaseResponse(false, $"{_errorMessage}: {ex.Message}");
         }
     }
 }

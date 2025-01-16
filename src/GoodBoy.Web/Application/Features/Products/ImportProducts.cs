@@ -1,5 +1,8 @@
 ﻿using FastEndpoints;
+using GoodBoy.Client.Features.Shared;
 using GoodBoy.Core.Features.Products;
+using GoodBoy.Core.Features.Shared;
+using GoodBoy.Web.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
 
 namespace GoodBoy.Web.Application.Features.Products;
@@ -17,7 +20,8 @@ public class ImportProducts : Endpoint<ImportProductsRequest, ImportProductsRequ
 
     public override async Task HandleAsync(ImportProductsRequest req, CancellationToken cancellationToken)
     {
-        var (success, message) = await _importService.ImportProductsAsync(req.XmlContent, cancellationToken);
-        await SendAsync(new ImportProductsRequest.Response(success, message), cancellation: cancellationToken);
+        var serviceResponse = await _importService.ImportProductsAsync(req.XmlContent, cancellationToken);
+        var response = new ImportProductsRequest.Response(serviceResponse.Success, serviceResponse.Message);
+        await SendAsync(response, cancellation: cancellationToken);
     }
 }

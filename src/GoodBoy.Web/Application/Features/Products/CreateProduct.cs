@@ -12,9 +12,9 @@ namespace GoodBoy.Web.Application.Features.Products;
 public class CreateProduct : Endpoint<EditProductRequest, EditProductRequest.Response>
 {
     private readonly ApplicationDbContext _context;
-    private readonly ILogger<ImportProducts> _logger;
+    private readonly ILogger<CreateProduct> _logger;
 
-    public CreateProduct(ApplicationDbContext context, ILogger<ImportProducts> logger)
+    public CreateProduct(ApplicationDbContext context, ILogger<CreateProduct> logger)
     {
         _context = context;
         _logger = logger;
@@ -22,11 +22,12 @@ public class CreateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
 
     public override async Task HandleAsync(EditProductRequest request, CancellationToken cancellationToken)
     {
+        string? _errorMessage;
         try
         {
             _logger.LogInformation($"Creating a new product with Id {request.Product.Id} and name: {request.Product.Name}");
 
-            // Note: Check for Id should be handled on UI
+            // Note: Checks for updating Id should be handled on UI
             var product = request.Product.MapNewEntity();
 
             await _context.AddAsync(product, cancellationToken);
@@ -42,12 +43,16 @@ public class CreateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
             await SendAsync(new EditProductRequest.Response(product.Id));
         } catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Database update error during product creation.");
-            await SendAsync(new EditProductRequest.Response(null), cancellation: cancellationToken);
+            _errorMessage = "Database update error.";
+            _logger.LogError(ex, _errorMessage);
+            var response = new EditProductRequest.Response(null, false, $"{_errorMessage}: {ex.Message}");
+            await SendAsync(response, cancellation: cancellationToken, statusCode: StatusCodes.Status400BadRequest);
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred during product creation.");
-            await SendAsync(new EditProductRequest.Response(null), cancellation: cancellationToken);
+            _errorMessage = "An unexpected error occurred.";
+            _logger.LogError(ex, _errorMessage);
+            var response = new EditProductRequest.Response(null, false, $"{_errorMessage}: {ex.Message}");
+            await SendAsync(response, cancellation: cancellationToken, statusCode: StatusCodes.Status400BadRequest);
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿using Quartz;
+﻿using GoodBoy.Core.Features.Products;
+using System.Threading;
+using Quartz;
+using static FastEndpoints.Ep;
 
 namespace GoodBoy.Web.Application.Features.Products;
 
-// ImportProductsJob.cs
 public class ImportProductsJob : IJob 
 {
     private readonly ILogger<ImportProductsJob> _logger;
@@ -20,15 +22,15 @@ public class ImportProductsJob : IJob
         {
             string productsXml = await File.ReadAllTextAsync("wwwroot/Products/products_feed.xml");
 
-            var (success, message) = await _importService.ImportProductsAsync(productsXml, context.CancellationToken);
+            var serviceResponse = await _importService.ImportProductsAsync(productsXml, context.CancellationToken);
 
-            if (success)
+            if (serviceResponse.Success)
             {
                 _logger.LogInformation("Products imported successfully from file.");
             }
             else
             {
-                _logger.LogError("Product import from file failed: {Message}", message);
+                _logger.LogError("Product import from file failed: {Message}", serviceResponse.Message);
             }
         }
         catch (IOException ex)

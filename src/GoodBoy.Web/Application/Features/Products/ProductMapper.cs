@@ -26,7 +26,7 @@ public static class ProductMapper
         };
     }
 
-    public static void MapCurrentEntity(this ProductDto productDto, Product product)
+    public static void MapCurrentEntity(this ProductDto productDto, Product product, bool keepPrice = false)
     {
         product.Id = productDto.Id ?? product.ProductId;
         product.Ean = productDto.Ean;
@@ -35,7 +35,7 @@ public static class ProductMapper
         product.Quantity = productDto.Quantity;
         product.Currency = productDto.Currency;
         product.UpdatedOn = (product.Price != productDto.Price ? DateTime.UtcNow : product.UpdatedOn);
-        product.Price = productDto.Price;
+        product.Price = (keepPrice ? product.Price : productDto.Price);
         product.Categories = productDto.Categories;
         product.MainPicture = productDto.MainPicture;
     }

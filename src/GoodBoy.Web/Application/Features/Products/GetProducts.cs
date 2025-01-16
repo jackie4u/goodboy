@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using GoodBoy.Client.Features.Shared;
 using GoodBoy.Core.Features.Products;
 using GoodBoy.Web.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -10,9 +11,9 @@ namespace GoodBoy.Web.Application.Features.Products;
 public class GetProducts : EndpointWithoutRequest<GetProductsRequest.Response>
 {
     private readonly ApplicationDbContext _context;
-    private readonly ILogger<ImportProducts> _logger;
+    private readonly ILogger<GetProducts> _logger;
 
-    public GetProducts(ApplicationDbContext context, ILogger<ImportProducts> logger)
+    public GetProducts(ApplicationDbContext context, ILogger<GetProducts> logger)
     {
         _context = context;
         _logger = logger;
@@ -20,6 +21,7 @@ public class GetProducts : EndpointWithoutRequest<GetProductsRequest.Response>
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
+        string? _errorMessage;
         try
         {
             _logger.LogInformation("Fetching all products.");
@@ -55,8 +57,10 @@ public class GetProducts : EndpointWithoutRequest<GetProductsRequest.Response>
             await SendAsync(response);
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred while fetching products.");
-            await SendErrorsAsync();
+            _errorMessage = "An unexpected error occurred.";
+            _logger.LogError(ex, _errorMessage);
+            var response = new GetProductsRequest.Response(null, false, $"{_errorMessage}: {ex.Message}");
+            await SendAsync(response, cancellation: cancellationToken, statusCode: StatusCodes.Status400BadRequest);
         }
     }
 }

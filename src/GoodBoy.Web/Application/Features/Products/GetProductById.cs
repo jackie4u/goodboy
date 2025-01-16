@@ -11,9 +11,9 @@ namespace GoodBoy.Web.Application.Features.Products;
 public class GetProductById : EndpointWithoutRequest<GetProductByIdRequest.Response>
 {
     private readonly ApplicationDbContext _context;
-    private readonly ILogger<ImportProducts> _logger;
+    private readonly ILogger<GetProductById> _logger;
 
-    public GetProductById(ApplicationDbContext context, ILogger<ImportProducts> logger)
+    public GetProductById(ApplicationDbContext context, ILogger<GetProductById> logger)
     {
         _context = context;
         _logger = logger;
@@ -21,13 +21,14 @@ public class GetProductById : EndpointWithoutRequest<GetProductByIdRequest.Respo
 
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
+        string? _errorMessage;
         try
         {
             int id = Route<int>("Id");
             _logger.LogInformation($"Fetching product with ID: {id}");
 
             var product = await _context.Products
-                .SingleAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
             {
@@ -54,14 +55,12 @@ public class GetProductById : EndpointWithoutRequest<GetProductByIdRequest.Respo
 
             _logger.LogInformation($"Product with ID {id} fetched successfully.");
             await SendAsync(response);
-        } catch (InvalidOperationException ex) // Handle SingleAsync exceptions
-        {
-            _logger.LogError(ex, $"Error fetching product: {ex.Message}");
-            await SendNotFoundAsync(); // Or SendBadRequestAsync if appropriate
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred while fetching product.");
-            await SendErrorsAsync();
+            _errorMessage = "An unexpected error occurred.";
+            _logger.LogError(ex, _errorMessage);
+            var response = new GetProductByIdRequest.Response(null, false, $"{_errorMessage}: {ex.Message}");
+            await SendAsync(response, cancellation: cancellationToken, statusCode: StatusCodes.Status400BadRequest);
         }
     }
 }

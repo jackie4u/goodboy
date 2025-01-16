@@ -12,9 +12,9 @@ namespace GoodBoy.Web.Application.Features.Products;
 public class UpdateProduct : Endpoint<EditProductRequest, EditProductRequest.Response>
 {
     private readonly ApplicationDbContext _context;
-    private readonly ILogger<ImportProducts> _logger;
+    private readonly ILogger<UpdateProduct> _logger;
 
-    public UpdateProduct(ApplicationDbContext context, ILogger<ImportProducts> logger)
+    public UpdateProduct(ApplicationDbContext context, ILogger<UpdateProduct> logger)
     {
         _context = context;
         _logger = logger;
@@ -22,6 +22,7 @@ public class UpdateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
 
     public override async Task HandleAsync(EditProductRequest request, CancellationToken cancellationToken)
     {
+        string? _errorMessage;
         try
         {
             _logger.LogInformation("Updating product with ID: {ProductId}", request.Product.ProductId);
@@ -31,7 +32,9 @@ public class UpdateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
 
             if (product == null)
             {
-                _logger.LogWarning($"Product with ID {request.Product.ProductId} not found.");
+                _errorMessage = $"Product with ID {request.Product.ProductId} not found.";
+                _logger.LogWarning(_errorMessage);
+                AddError(_errorMessage);
                 await SendNotFoundAsync();
                 return;
             }
@@ -39,8 +42,12 @@ public class UpdateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
             var updatedHoursAgo = (DateTime.UtcNow - product.UpdatedOn).TotalHours;
             if (product.Price != request.Product.Price && updatedHoursAgo < 12)
             {
-                _logger.LogError($"It is not possible to update price more than once in 12 hours. Update price will be possible again after {product.UpdatedOn.AddHours(12)}.");
-                await SendErrorsAsync();
+                _errorMessage = $"It is not possible to update price more than once in 12 hours. " +
+                                   $"Update price will be possible again after {product.UpdatedOn.AddHours(12)}.";
+
+                _logger.LogError(_errorMessage);
+                var response = new EditProductRequest.Response(null, false, _errorMessage);
+                await SendAsync(response, cancellation: cancellationToken, statusCode: StatusCodes.Status400BadRequest);
                 return;
             }
 
@@ -50,18 +57,18 @@ public class UpdateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
             _logger.LogInformation($"Product with ID {product.Id} updated successfully.");
 
             await SendAsync(new EditProductRequest.Response(product.Id));
-        } catch (DbUpdateConcurrencyException ex)
-        {
-            _logger.LogError(ex, "Concurrency error during product update.");
-            await SendErrorsAsync();
         } catch (DbUpdateException ex)
         {
-            _logger.LogError(ex, "Database update error during product update.");
-            await SendErrorsAsync();
+            _errorMessage = "Database update error.";
+            _logger.LogError(ex, _errorMessage);
+            var response = new EditProductRequest.Response(null, false, $"{_errorMessage}: {ex.Message}");
+            await SendAsync(response, cancellation: cancellationToken, statusCode: StatusCodes.Status400BadRequest);
         } catch (Exception ex)
         {
-            _logger.LogError(ex, "An unexpected error occurred during product update.");
-            await SendErrorsAsync();
+            _errorMessage = "An unexpected error occurred.";
+            _logger.LogError(ex, _errorMessage);
+            var response = new EditProductRequest.Response(null, false, $"{_errorMessage}: {ex.Message}");
+            await SendAsync(response, cancellation: cancellationToken, statusCode: StatusCodes.Status400BadRequest);
         }
     }
 }

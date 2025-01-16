@@ -50,6 +50,14 @@
         {
             var request = new ImportProductsRequest { XmlContent = _xmlContent };
             var response = await HttpClient.PostAsJsonAsync(ImportProductsRequest.RouteTemplate, request, CancellationToken.None);
+
+            var result = await response.Content.ReadFromJsonAsync<ImportProductsRequest.Response>();
+
+            if (!result!.Success)
+            {
+                throw new Exception($"Server error: '{result.Message}'");
+            }
+
             // Note: Redirect to the product detail page after successful creation
             NavManager.NavigateTo("/");
         }
