@@ -1,16 +1,18 @@
 # GoodBoy: Catalogue with dogs to rent
 
-This repository demonstrates application built with ASP.NET Core 8 and Blazor WASM.
+This repository demonstrates the application built with ASP.NET Core 8 and Blazor WASM.
 
 **Note:** This application is purely for educational purposes. It is designed to showcase modern .NET and Blazor development techniques and is not intended for production use.
 
-Application demonstrates CRUD operations on catalogue renting dogs with special skills (e.g., professional cuddlers, pillow destroyers).
+The application demonstrates CRUD operations on catalogue renting dogs with special skills (e.g., professional cuddlers, pillow destroyers).
 
 ## Live Demo
 
-([Good Boy on Azurewebsites](https://goodboyapp.azurewebsites.net/))
+[Good Boy on Azurewebsites](https://goodboyapp.azurewebsites.net/){:target="_blank"}
 
 ## Screenshots
+
+![image](https://github.com/user-attachments/assets/20ec9435-9f19-4374-a8f5-1e36d4e6ee2e)
 
 ## Known Todos and Bugs
 
