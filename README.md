@@ -8,9 +8,9 @@ The application demonstrates CRUD operations on catalogue renting dogs with spec
 
 ## Live Demo
 
-[Good Boy on Azurewebsites](https://goodboyapp.azurewebsites.net/){:target="_blank"}
+[Good Boy on Azurewebsites](https://goodboyapp.azurewebsites.net)
 
-## Screenshots
+### Screenshots
 
 ![image](https://github.com/user-attachments/assets/20ec9435-9f19-4374-a8f5-1e36d4e6ee2e)
 
