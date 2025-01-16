@@ -1,44 +1,75 @@
-# GoodBoy: Product Catalog Management Application
+# GoodBoy: Catalogue with dogs to rent
 
-This repository contains a sample e-commerce application built with ASP.NET Core 8, Blazor WASM, Entity Framework Core, and SQL Server. 
-It demonstrates managing a product catalogue, importing data from an XML file, and enforcing business rules like price change limitations.
+This repository demonstrates application built with ASP.NET Core 8 and Blazor WASM.
 
-**Note:** This application is for educational purposes only. It is designed to showcase ASP.NET Core and Blazor development techniques and is not intended for production use.
+**Note:** This application is purely for educational purposes. It is designed to showcase modern .NET and Blazor development techniques and is not intended for production use.
+
+Application demonstrates CRUD operations on catalogue renting dogs with special skills (e.g., professional cuddlers, pillow destroyers).
+
+## Live Demo
+
+([Good Boy on Azurewebsites](https://goodboyapp.azurewebsites.net/))
+
+## Screenshots
+
+## Known Todos and Bugs
+
+* Implement categories as a lookup table and relations to products.
+* Implement filtering of products based on categories.
+* Implement lazy loading for improved performance.
+* Implement authentication of API endpoints.
+* Improve error handling and messaging.
 
 ## Features
 
-* **Backend**
+* **Product Catalog Management:**
+    * Managing a product catalogue: Add, edit, and view products (dogs with special skills).
+    * 12-hour price change limitation.
+    * Import product data daily from an XML file.
+* **API:** Exposes functionality via a REST API using FastEndpoints.
+* **Frontend:**
+    * Blazor WASM for a user-friendly interface.
+    * MudBlazor component library for UI components.
+* **Background Service:**
+    * Imports product data daily from an XML file using Quartz.NET.
 
-  * **API:** Provides a REST API for managing products.
+## Architectural Patterns
+  * REPR Pattern (Request-Endpoint-Response)
+  * Vertical Slice Architecture (VSA)
 
-    * **Add Product:** Add new products to the catalogue.
-    * **Edit Product:** Edit existing product information (with a 12-hour price change limitation).
-    * **View Product Detail:** Retrieve details of a specific product.
-    * **View Product List:** Retrieve a list of all products.
-  * **Database:** Uses Microsoft SQL Server and Entity Framework Core for data persistence.
-  * **Background Service:** Automatically imports product data from an XML file once a day.
-* **Frontend:** Built with Blazor provides a user-friendly interface for API interaction.
+## How it Works: Request-Endpoint-Response (REPR) Flow
 
-## Technologies Used
+This application demonstrates a typical REPR flow, common in modern web applications:
 
-* ASP.NET 8 (Web API)
-* Entity Framework Core
-* SQL Server
-* FastEndpoint
-* Blazor
-* MudBlazor component library
+1. **Razor Page (Client):** A user interacts with a Razor component in the Blazor WASM frontend (e.g., clicks a button to create a new product).
+2. **Request (Client):** The component uses an `HttpClient` to send an HTTP request (e.g., a POST request with product data) to the ASP.NET Core Web API.
+3. **Endpoint (Server):**  FastEndpoints routes the request to the appropriate endpoint (e.g., the `CreateProduct` endpoint). The endpoint processes the request, interacts with the database (using Entity Framework Core), and applies any business logic (e.g., the 12-hour price change rule).
+4. **Response (Server):** The endpoint creates a response object (e.g., `EditProductRequest.Response`) containing the result of the operation (e.g., the ID of the created product) and sends it back to the client as a JSON response.
+5. **Razor Page Handling (Client):** The Blazor component receives the response, deserializes the JSON data, and updates the UI accordingly (e.g., displays a success message or redirects to another page).
+
+## Technologies and libraries
+
+* **Backend:**
+    * ASP.NET Core 8 Web API
+    * Entity Framework Core
+    * SQL Server
+    * FastEndpoints (for building APIs)
+    * Quartz.NET (for scheduling tasks)
+* **Frontend:**
+    * Blazor WASM (Single Page Application)
+    * MudBlazor (UI component library)
 
 ## Getting Started
 
 ### Prerequisites
 
-* .NET SDK
+* .NET 8 SDK
 * SQL Server (with a database created for the application)
 * Visual Studio 2022 or later (or your preferred IDE with .NET development support)
 
 ### Running the Application Locally
 
-1. Clone the repository: `git clone https://github.com/jackie4u/goodboy.git`
+1. Clone the repository: `git clone https://github.com/your-username/goodboy.git`
 2. Update the connection string in `appsettings.json` to point to your SQL Server database.
 3. Run the database migrations: `dotnet ef database update`
 4. Run the application: `dotnet run`
@@ -46,14 +77,13 @@ It demonstrates managing a product catalogue, importing data from an XML file, a
 
 ## Project Structure
 
-* **Web:** Contains the ASP.NET Web API project with data access and other infrastructure components.
-* **Core:** Contains the core business entities and logic.
-* **Client:** Contains the Blazor Server frontend project.
+* **GoodBoy.Web:** Contains the ASP.NET Core Web API project with FastEndpoints, data access, and Quartz.NET integration.
+* **GoodBoy.Core:** Contains core business logic, entities, DTOs, and API request/response models.
+* **GoodBoy.Client:** Contains the Blazor WASM frontend project with MudBlazor components.
 
-## Educational Purpose
+## Contributing
 
-This repository serves as a learning resource for developers interested in:
+Contributions are welcome! Feel free to open issues or submit pull requests.
 
-* Building REST APIs with ASP.NET.
-* Using Entity Framework Core for database interactions.
-* Creating interactive web applications with Blazor.
+## License
+* MIT License

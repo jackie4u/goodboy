@@ -1,4 +1,5 @@
-﻿using FastEndpoints;
+﻿using Azure.Core;
+using FastEndpoints;
 using GoodBoy.Client.Features.Shared;
 using GoodBoy.Core.Features.Products;
 using GoodBoy.Web.Data;
@@ -32,8 +33,9 @@ public class GetProducts : EndpointWithoutRequest<GetProductsRequest.Response>
 
             if (!products.Any())
             {
-                _logger.LogWarning("No products found in the database.");
-                await SendNotFoundAsync();
+                _errorMessage = "No products found in the database.";
+                _logger.LogWarning(_errorMessage);
+                await SendAsync(new GetProductsRequest.Response(null, true, _errorMessage), cancellation: cancellationToken);
                 return;
             }
 

@@ -145,7 +145,7 @@ namespace GoodBoy.Web.Migrations
                         .IsUnique()
                         .HasFilter("[Id] IS NOT NULL");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

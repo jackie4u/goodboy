@@ -34,8 +34,8 @@ public class UpdateProduct : Endpoint<EditProductRequest, EditProductRequest.Res
             {
                 _errorMessage = $"Product with ID {request.Product.ProductId} not found.";
                 _logger.LogWarning(_errorMessage);
-                AddError(_errorMessage);
-                await SendNotFoundAsync();
+                var response = new EditProductRequest.Response(null, false, _errorMessage);
+                await SendAsync(response, cancellation: cancellationToken, statusCode: StatusCodes.Status404NotFound);
                 return;
             }
 
